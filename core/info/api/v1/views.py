@@ -4,6 +4,9 @@ from rest_framework import status
 from info.models import *
 from .serializers import *
 from rest_framework import generics
+from .tasks import create_interface, update_interface
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 
 class IoSCreateView(generics.GenericAPIView):
@@ -144,28 +147,46 @@ class InterfaceTypeUpdateView(generics.GenericAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# class InterfaceCreateView(generics.GenericAPIView):
+#     serializer_class = InterfaceSerializer
+#     def post(self, request, *args, **kwargs):
+#         serializer = InterfaceSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class InterfaceUpdateView(generics.GenericAPIView):
+#     serializer_class = InterfaceSerializer
+#     def put(self, request, pk, *args, **kwargs):
+#         try:
+#             interface = Interface.objects.get(pk=pk)
+#         except Interface.DoesNotExist:
+#             return Response({"error": "Interface not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+#         serializer = InterfaceSerializer(interface, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_exempt, name='dispatch')
 class InterfaceCreateView(generics.GenericAPIView):
     serializer_class = InterfaceSerializer
-    def post(self, request, *args, **kwargs):
-        serializer = InterfaceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        create_interface.delay(data)
+        return Response({"message": "Interface creation task submitted."}, status=status.HTTP_202_ACCEPTED)
+
+@method_decorator(csrf_exempt, name='dispatch')
 class InterfaceUpdateView(generics.GenericAPIView):
     serializer_class = InterfaceSerializer
+
     def put(self, request, pk, *args, **kwargs):
-        try:
-            interface = Interface.objects.get(pk=pk)
-        except Interface.DoesNotExist:
-            return Response({"error": "Interface not found."}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = InterfaceSerializer(interface, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        update_interface.delay(pk, data)
+        return Response({"message": "Interface update task submitted."}, status=status.HTTP_202_ACCEPTED)
 
 class VlanCreateView(generics.GenericAPIView):
     serializer_class = VlanSerializer
