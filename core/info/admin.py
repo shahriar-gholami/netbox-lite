@@ -1,38 +1,44 @@
 from django.contrib import admin
-from .models import IoS, DeviceSeries, DeviceRole, Site, Device, InterfaceType, Interface, Vlan, IPVersion, IPAddress
+from .models import DeviceSeries, Device, InterfaceType, Interface, Vlan, IPVersion, IPAddress
+from django.utils.html import format_html
+from django.urls import reverse
 
-@admin.register(IoS)
-class IoSAdmin(admin.ModelAdmin):
+
+@admin.register(DeviceSeries)
+class DeviceSeriesAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
     ordering = ('name',)
 
-@admin.register(DeviceSeries)
-class DeviceSeriesAdmin(admin.ModelAdmin):
-    list_display = ('name', 'company', 'ios')
-    list_filter = ('company', 'ios')
-    search_fields = ('name', 'company')
-    ordering = ('name',)
+# @admin.register(Site)
+# class SiteAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'city')
+#     search_fields = ('name', 'city')
+#     ordering = ('name',)
 
-@admin.register(DeviceRole)
-class DeviceRoleAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    search_fields = ('name',)
-    ordering = ('name',)
 
-@admin.register(Site)
-class SiteAdmin(admin.ModelAdmin):
-    list_display = ('name', 'city')
-    search_fields = ('name', 'city')
-    ordering = ('name',)
+class InterfaceInline(admin.TabularInline):
+    model = Interface
+    fields = ('name_link', 'status', 'type')
+    readonly_fields = ('name_link',)
+    can_delete = False  # حذف قابلیت حذف اینترفیس
+    extra = 0 
 
-@admin.register(Device)
+    def name_link(self, obj):
+        link = reverse('admin:info_interface_change', args=[obj.pk])
+        return format_html('<a href="{}">{}</a>', link, obj.name)
+    name_link.short_description = 'Name'
+
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'ip_address', 'role', 'site', 'ios', 'series', 'status')
-    list_filter = ('role', 'site', 'ios', 'series', 'status')
-    search_fields = ('name', 'ip_address')
-    ordering = ('name',)
-    list_editable = ('status',)
+    list_display = ('name', 'ip_address', 'series','get_interface_count')
+    inlines = [InterfaceInline]
+
+    def get_interface_count(self, obj):
+        return obj.get_device_interfaces().count()
+    
+    get_interface_count.short_description = 'Number of Interfaces'
+
+admin.site.register(Device, DeviceAdmin)
 
 @admin.register(InterfaceType)
 class InterfaceTypeAdmin(admin.ModelAdmin):
@@ -42,7 +48,7 @@ class InterfaceTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Interface)
 class InterfaceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'device', 'status', 'type', 'ip_address')
+    list_display = ('name', 'device', 'status', 'description')
     list_filter = ('device', 'status', 'type')
     search_fields = ('name', 'device__name')
     ordering = ('name',)
@@ -63,11 +69,10 @@ class IPVersionAdmin(admin.ModelAdmin):
 
 @admin.register(IPAddress)
 class IPAddressAdmin(admin.ModelAdmin):
-    list_display = ('ip_address', 'version', 'status', 'device')
-    list_filter = ('version', 'status', 'device')
-    search_fields = ('ip_address', 'device__name')
+    list_display = ('ip_address', 'version', 'interface', 'device')
+    list_filter = ('version', 'device')
+    search_fields = ('ip_address',)
     ordering = ('ip_address',)
-    list_editable = ('status',)
 
 from django.contrib import admin
 

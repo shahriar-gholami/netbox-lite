@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 urlpatterns = [
-   
+   path('api/v1/', include('info.api.v1.urls')),
 ]
 
 # serving static and media for development
