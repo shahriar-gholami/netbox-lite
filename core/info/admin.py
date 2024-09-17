@@ -10,13 +10,6 @@ class DeviceSeriesAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     ordering = ('name',)
 
-# @admin.register(Site)
-# class SiteAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'city')
-#     search_fields = ('name', 'city')
-#     ordering = ('name',)
-
-
 class InterfaceInline(admin.TabularInline):
     model = Interface
     fields = ('name_link', 'status', 'type')
@@ -32,6 +25,7 @@ class InterfaceInline(admin.TabularInline):
 class DeviceAdmin(admin.ModelAdmin):
     list_display = ('name', 'ip_address', 'series','get_interface_count')
     inlines = [InterfaceInline]
+    ordering = ('name',)
 
     def get_interface_count(self, obj):
         return obj.get_device_interfaces().count()
@@ -56,10 +50,10 @@ class InterfaceAdmin(admin.ModelAdmin):
 
 @admin.register(Vlan)
 class VlanAdmin(admin.ModelAdmin):
-    list_display = ('id_number', 'name', 'device', 'ip_address')
+    list_display = ('vlan_id', 'vlan_name', 'device', )
     list_filter = ('device',)
-    search_fields = ('name', 'id_number', 'device__name')
-    ordering = ('id_number',)
+    search_fields = ('vlan_name', 'vlan_id', 'device__name')
+    ordering = ('vlan_id',)
 
 @admin.register(IPVersion)
 class IPVersionAdmin(admin.ModelAdmin):
@@ -74,7 +68,6 @@ class IPAddressAdmin(admin.ModelAdmin):
     search_fields = ('ip_address',)
     ordering = ('ip_address',)
 
-from django.contrib import admin
 
 admin.site.site_header = "NetBox"
 admin.site.site_title = "NetBox"

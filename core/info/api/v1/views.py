@@ -34,34 +34,6 @@ class DeviceSeriesUpdateView(generics.GenericAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class SiteCreateView(generics.GenericAPIView):
-#     serializer_class = SiteSerializer
-#     def post(self, request, *args, **kwargs):
-#         serializer = SiteSerializer(data=request.data)
-#         if serializer.is_valid():
-#             name = serializer.validated_data.get('name')
-#             city = serializer.validated_data.get('city')
-#             new_site = Site.objects.get_or_create(
-#                 name = name,
-#                 city = city
-#             )
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class SiteUpdateView(generics.GenericAPIView):
-#     serializer_class = SiteSerializer
-#     def put(self, request, pk, *args, **kwargs):
-#         try:
-#             site = Site.objects.get(pk=pk)
-#         except Site.DoesNotExist:
-#             return Response({"error": "Site not found."}, status=status.HTTP_404_NOT_FOUND)
-        
-#         serializer = SiteSerializer(site, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class DeviceCreateView(generics.GenericAPIView):
     serializer_class = DeviceSerializer
     def post(self, request, *args, **kwargs):
@@ -174,18 +146,16 @@ class VlanCreateView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = VlanSerializer(data=request.data)
         if serializer.is_valid():
-            'id_number', 'name', 'device', 'ip_address'
-            id_number = serializer.validated_data.get('id_number')
-            name = serializer.validated_data.get('name')
-            device = serializer.validated_data.get('device')
-            ip_address = serializer.validated_data.get('ip_address')
-            description = serializer.validated_data.get('description')
-            new_vlan = Vlan.objects.get_or_create(
-                id_number = id_number,
-                name = name,
+            vlan_id = serializer.validated_data.get('vlan_id')
+            vlan_name = serializer.validated_data.get('vlan_name')
+            device_name = serializer.validated_data.get('device_name')
+            device = Device.objects.get(
+                name = device_name
+            )
+            new_vlan, create = Vlan.objects.get_or_create(
+                vlan_id = vlan_id,
+                vlan_name = vlan_name,
                 device = device,
-                ip_address = ip_address,
-                description = description
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

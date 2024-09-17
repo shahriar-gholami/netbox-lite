@@ -2,9 +2,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    # path('site/create/', SiteCreateView.as_view(), name='site_create'),
     path('device-series/create/', DeviceSeriesCreateView.as_view(), name='device_series_create'),
-    # path('site/update/<int:pk>/', SiteUpdateView.as_view(), name='site_update'),
     path('device/create/', DeviceCreateView.as_view(), name='device_create'),
     path('device/update/<int:pk>/', DeviceUpdateView.as_view(), name='device_update'),
     path('interface-type/create/', InterfaceTypeCreateView.as_view(), name='interface_type_create'),

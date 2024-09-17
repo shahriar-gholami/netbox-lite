@@ -7,13 +7,6 @@ class DeviceSeries(models.Model):
     def __str__(self):
         return self.name
 
-# class Site(models.Model):
-#     name = models.CharField(max_length=255)
-#     city = models.CharField(max_length=255)
-
-#     def __str__(self):
-#         return f'{self.name} - {self.city}'
-
 class Device(models.Model):
     name = models.CharField(max_length=255)
     ip_address = models.CharField(max_length=255, null=True, blank=True)
@@ -47,14 +40,12 @@ class Interface(models.Model):
         return f'{self.name} - {self.device.name}'
 
 class Vlan(models.Model):
-    id_number = models.IntegerField()
-    name = models.CharField(max_length=255)
+    vlan_id = models.IntegerField()
+    vlan_name = models.CharField(max_length=255)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    ip_address = models.ForeignKey('IPAddress', null=True, blank=True, on_delete=models.SET_NULL)
-    description = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.name} - {self.device.name}'
+        return f'{self.vlan_name} - {self.device.name}'
 
 class IPVersion(models.Model):
     name = models.CharField(max_length=255)
@@ -71,7 +62,4 @@ class IPAddress(models.Model):
 
     def __str__(self):
         return self.ip_address
-
-
-
 
