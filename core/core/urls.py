@@ -22,6 +22,8 @@ from django.views.generic import TemplateView
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.views.generic import RedirectView
+
 
 # تنظیمات Swagger و ReDoc
 schema_view = get_schema_view(
@@ -38,6 +40,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/admin/', permanent=True)),
     path('admin/', admin.site.urls),
     path("info/", include("info.urls")),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
