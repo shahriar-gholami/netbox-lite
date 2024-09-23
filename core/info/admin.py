@@ -46,7 +46,7 @@ class InterfaceAdmin(admin.ModelAdmin):
     list_filter = ('device', 'status', 'type')
     search_fields = ('name', 'device__name')
     ordering = ('name',)
-    list_editable = ('status',)
+    
 
 @admin.register(Vlan)
 class VlanAdmin(admin.ModelAdmin):
