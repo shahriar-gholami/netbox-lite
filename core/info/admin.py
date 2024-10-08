@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import DeviceSeries, Device, InterfaceType, Interface, Vlan, IPVersion, IPAddress
+from .models import DeviceSeries, Device, InterfaceType, Interface, Vlan, IPVersion, IPAddress, Route
 from django.utils.html import format_html
 from django.urls import reverse
+
 
 
 @admin.register(DeviceSeries)
@@ -67,6 +68,15 @@ class IPAddressAdmin(admin.ModelAdmin):
     list_filter = ('version', 'device')
     search_fields = ('ip_address',)
     ordering = ('ip_address',)
+
+class RouteAdmin(admin.ModelAdmin):
+    list_display = ('destination', 'type', 'next_hop', 'interface', 'device')
+    search_fields = ('destination', 'next_hop', 'interface', 'device__name')  # جستجو در فیلدهای دلخواه
+    list_filter = ('type', 'device')  # اضافه کردن فیلتر بر اساس نوع روت و دستگاه
+
+# Register the Route model with custom admin
+admin.site.register(Route, RouteAdmin)
+
 
 
 admin.site.site_header = "NetBox"

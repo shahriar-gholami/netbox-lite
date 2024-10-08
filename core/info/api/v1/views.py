@@ -264,7 +264,27 @@ class ResetDeviceView(generics.GenericAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+class RouteCreateView(generics.GenericAPIView):
+    serializer_class = RouteSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = RouteSerializer(data=request.data)
+        if serializer.is_valid():
+            destination = serializer.validated_data.get('destination')
+            type = serializer.validated_data.get('type')
+            next_hop = serializer.validated_data.get('next_hop')
+            interface = serializer.validated_data.get('interface')
+            device_name = serializer.validated_data.get('device_name')
+            device = Device.objects.get(name=device_name)
+            
+            new_route, create = Route.objects.get_or_create(
+                destination=destination,
+                type=type,
+                next_hop=next_hop,
+                interface=interface,
+                device = device
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

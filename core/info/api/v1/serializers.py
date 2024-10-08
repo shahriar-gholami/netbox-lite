@@ -47,6 +47,14 @@ class VlanSerializer(serializers.Serializer):
 class ResetDeviceSerializer(serializers.Serializer):
     device_name = serializers.CharField(max_length=255)
 
+class RouteSerializer(serializers.Serializer):
+    destination = serializers.CharField(max_length=255)
+    type = serializers.CharField(max_length=255)
+    next_hop = serializers.CharField(max_length=255)
+    interface = serializers.CharField(max_length=255)
+    device_name = serializers.CharField(max_length=255)
+
+
 
 
 

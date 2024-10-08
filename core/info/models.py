@@ -63,3 +63,14 @@ class IPAddress(models.Model):
     def __str__(self):
         return self.ip_address
 
+class Route(models.Model):
+    destination = models.CharField(max_length=255)
+    type = models.CharField(max_length=255)
+    next_hop = models.CharField(max_length=255)
+    interface = models.CharField(max_length=255)
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+
+
+
+
+

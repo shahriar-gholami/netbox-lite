@@ -14,6 +14,7 @@ urlpatterns = [
     path('ip-version/create/', IPVersionCreateView.as_view(), name='ip_version_create'),
     path('ip-version/update/<int:pk>/', IPVersionUpdateView.as_view(), name='ip_version_update'),
     path('ip-address/create/', IPAddressCreateView.as_view(), name='ip_address_create'),
+    path('route/create/', RouteCreateView.as_view(), name='route_create'),
     path('ip-address/update/<int:pk>/', IPAddressUpdateView.as_view(), name='ip_address_update'),
     path('reset-device/', ResetDeviceView.as_view(), name='reset_device'),
 ]
