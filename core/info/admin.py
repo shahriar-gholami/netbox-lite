@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DeviceSeries, Device, InterfaceType, Interface, Vlan, IPVersion, IPAddress, Route
+from .models import *
 from django.utils.html import format_html
 from django.urls import reverse
 
@@ -77,6 +77,41 @@ class RouteAdmin(admin.ModelAdmin):
 # Register the Route model with custom admin
 admin.site.register(Route, RouteAdmin)
 
+
+class VrfRouteAdmin(admin.ModelAdmin):
+    list_display = ('destination', 'type', 'next_hop', 'interface', 'device', 'vrf_name')  # نمایش فیلدها در لیست اصلی
+    search_fields = ('destination', 'vrf_name', 'device__name')  # قابلیت جستجو بر اساس مقصد و VRF و نام دستگاه
+    list_filter = ('device', 'type', 'vrf_name')  # فیلتر بر اساس نوع و VRF و دستگاه
+    ordering = ('vrf_name', 'destination')  # مرتب‌سازی پیش‌فرض
+ 
+admin.site.register(VrfRoute, VrfRouteAdmin)
+
+@admin.register(MikrotikDevice)
+class MikrotikDeviceAdmin(admin.ModelAdmin):
+    list_display = ('ip_address', 'device_name')
+    search_fields = ('ip_address', 'device_name')
+    list_filter = ('ip_address', 'device_name')
+
+# MikrotikInterfaceAdmin برای نمایش اطلاعات اینترفیس‌ها
+@admin.register(MikrotikInterface)
+class MikrotikInterfaceAdmin(admin.ModelAdmin):
+    list_display = ('name','device',  'flag', 'type')
+    search_fields = ('device__device_name', 'name', 'flag', 'type')
+    list_filter = ('device', 'type')
+
+# MikrotikIPRouteAdmin برای نمایش اطلاعات مسیریابی‌ها
+@admin.register(MikrotikIPRoute)
+class MikrotikIPRouteAdmin(admin.ModelAdmin):
+    list_display = ('destination', 'device' , 'gateway', 'distance', 'flag')
+    search_fields = ('device__device_name', 'destination', 'gateway', 'distance', 'flag')
+    list_filter = ('device', 'distance')
+
+# MikrotikIPAddressAdmin برای نمایش اطلاعات آدرس‌های IP
+@admin.register(MikrotikIPAddress)
+class MikrotikIPAddressAdmin(admin.ModelAdmin):
+    list_display = ('address','device',  'network', 'flag')
+    search_fields = ('device__device_name', 'address', 'network', 'flag')
+    list_filter = ('device', 'network',)
 
 
 admin.site.site_header = "NetBox"

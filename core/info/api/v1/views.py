@@ -285,8 +285,94 @@ class RouteCreateView(generics.GenericAPIView):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class VrfRouteCreateView(generics.GenericAPIView):
+    serializer_class = VrfRouteSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = VrfRouteSerializer(data=request.data)
+        if serializer.is_valid():
+            destination = serializer.validated_data.get('destination')
+            type = serializer.validated_data.get('type')
+            next_hop = serializer.validated_data.get('next_hop')
+            interface = serializer.validated_data.get('interface')
+            device_name = serializer.validated_data.get('device_name')
+            device = Device.objects.get(name=device_name)
+            vrf_name = serializer.validated_data.get('vrf_name')
+            
+            new_route, create = VrfRoute.objects.get_or_create(
+                destination=destination,
+                type=type,
+                next_hop=next_hop,
+                interface=interface,
+                device = device,
+                vrf_name = vrf_name
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class MikrotikInterfaceCreateView(generics.GenericAPIView):
+    serializer_class = MikrotikInterfaceSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = MikrotikInterfaceSerializer(data=request.data)
+        if serializer.is_valid():
+            device_name = serializer.validated_data.get('device_name')
+            name = serializer.validated_data.get('name')
+            flag = serializer.validated_data.get('flag')
+            type = serializer.validated_data.get('type')
+            device = MikrotikDevice.objects.get(device_name=device_name)
+            
+            new_mikrotik_interfce, create = MikrotikInterface.objects.get_or_create(
+                name=name,
+                flag=flag,
+                type=type,
+                device = device,
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class MikrotikIPAddressCreateView(generics.GenericAPIView):
+    serializer_class = MikrotikIPAddressSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = MikrotikIPAddressSerializer(data=request.data)
+        if serializer.is_valid():
+            address = serializer.validated_data.get('address')
+            network = serializer.validated_data.get('network')
+            flag = serializer.validated_data.get('flag')
+            interface = serializer.validated_data.get('interface')
+            device_name = serializer.validated_data.get('device_name')
+            device = MikrotikDevice.objects.get(device_name=device_name)
+            
+            new_mikrotik_ip, create = MikrotikIPAddress.objects.get_or_create(
+                address=address,
+                flag=flag,
+                network=network,
+                device = device,
+                interface = interface
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class MikrotikIPRouteCreateView(generics.GenericAPIView):
+    serializer_class = MikrotikIPRouteSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = MikrotikIPRouteSerializer(data=request.data)
+        if serializer.is_valid():
+            destination = serializer.validated_data.get('destination')
+            gateway = serializer.validated_data.get('gateway')
+            flag = serializer.validated_data.get('flag')
+            distance = serializer.validated_data.get('distance')
+            device_name = serializer.validated_data.get('device_name')
+            device = MikrotikDevice.objects.get(device_name=device_name)
+            
+            new_mikrotik_ip_route, create = MikrotikIPRoute.objects.get_or_create(
+                destination=destination,
+                gateway=gateway,
+                flag=flag,
+                distance=distance,
+                device = device,
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

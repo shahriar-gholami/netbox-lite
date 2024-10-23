@@ -54,6 +54,37 @@ class RouteSerializer(serializers.Serializer):
     interface = serializers.CharField(max_length=255)
     device_name = serializers.CharField(max_length=255)
 
+class VrfRouteSerializer(serializers.Serializer):
+    destination = serializers.CharField(max_length=255)
+    type = serializers.CharField(max_length=255)
+    next_hop = serializers.CharField(max_length=255)
+    interface = serializers.CharField(max_length=255)
+    device_name = serializers.CharField(max_length=255)
+    vrf_name = serializers.CharField(max_length=255)
+
+class MikrotikInterfaceSerializer(serializers.Serializer):
+    device_name = serializers.CharField()
+    name = serializers.CharField()
+    flag = serializers.CharField()
+    type = serializers.CharField()
+
+class MikrotikIPRouteSerializer(serializers.Serializer):
+    device_name = serializers.CharField()
+    destination = serializers.CharField()
+    gateway = serializers.CharField()
+    distance = serializers.CharField()
+    flag = serializers.CharField()
+
+class MikrotikIPAddressSerializer(serializers.Serializer):
+    device_name = serializers.CharField()
+    address = serializers.CharField()
+    network = serializers.CharField()
+    flag = serializers.CharField()
+    interface = serializers.CharField()
+
+
+
+
 
 
 

@@ -15,6 +15,10 @@ urlpatterns = [
     path('ip-version/update/<int:pk>/', IPVersionUpdateView.as_view(), name='ip_version_update'),
     path('ip-address/create/', IPAddressCreateView.as_view(), name='ip_address_create'),
     path('route/create/', RouteCreateView.as_view(), name='route_create'),
+    path('vrf-route/create/', VrfRouteCreateView.as_view(), name='vrf_route_create'),
     path('ip-address/update/<int:pk>/', IPAddressUpdateView.as_view(), name='ip_address_update'),
+    path('mikrotik-interface/create/', MikrotikInterfaceCreateView.as_view(), name='mikrotik_intrface_create'),
+    path('mikrotik-ip/create/', MikrotikIPAddressCreateView.as_view(), name='mikrotik_ip_create'),
+    path('mikrotik-ip-route/create/', MikrotikIPRouteCreateView.as_view(), name='mikrotik_ip_route_create'),
     path('reset-device/', ResetDeviceView.as_view(), name='reset_device'),
 ]

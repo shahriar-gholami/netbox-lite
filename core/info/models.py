@@ -70,7 +70,53 @@ class Route(models.Model):
     interface = models.CharField(max_length=255)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.destination
+
+class VrfRoute(models.Model):
+    destination = models.CharField(max_length=255)
+    type = models.CharField(max_length=255)
+    next_hop = models.CharField(max_length=255)
+    interface = models.CharField(max_length=255)
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    vrf_name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.destination
 
 
+class MikrotikDevice(models.Model):
+    ip_address = models.CharField(max_length=255)
+    device_name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.device_name
 
+class MikrotikInterface(models.Model):
+    device = models.ForeignKey(MikrotikDevice, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    flag = models.CharField(max_length=255)
+    type = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class MikrotikIPRoute(models.Model):
+    device = models.ForeignKey(MikrotikDevice, on_delete=models.CASCADE)
+    destination = models.CharField(max_length=255)
+    gateway = models.CharField(max_length=255)
+    distance = models.CharField(max_length=255)
+    flag = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.destination
+
+class MikrotikIPAddress(models.Model):
+    device = models.ForeignKey(MikrotikDevice, on_delete=models.CASCADE)
+    address = models.CharField(max_length=255)
+    network = models.CharField(max_length=255)
+    flag = models.CharField(max_length=255)
+    interface = models.CharField(max_length=250, null=True, blank=True)
+
+    def __str__(self):
+        return self.address
