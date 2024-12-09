@@ -25,6 +25,7 @@ class InterfaceInline(admin.TabularInline):
 
 class DeviceAdmin(admin.ModelAdmin):
     list_display = ('name','host_name' ,'ip_address', 'series','get_interface_count')
+    list_editable = ('host_name' ,)
     inlines = [InterfaceInline]
     ordering = ('name',)
 
@@ -85,38 +86,6 @@ class VrfRouteAdmin(admin.ModelAdmin):
     ordering = ('vrf_name', 'destination')  # مرتب‌سازی پیش‌فرض
  
 admin.site.register(VrfRoute, VrfRouteAdmin)
-
-@admin.register(MikrotikDevice)
-class MikrotikDeviceAdmin(admin.ModelAdmin):
-    list_display = ('device_name','host_name' ,'ip_address', 'get_interface_count' )
-    search_fields = ('ip_address', 'device_name')
-    list_filter = ('ip_address', 'device_name')
-
-    def get_interface_count(self, obj):
-        return obj.get_device_interfaces().count()
-    
-    get_interface_count.short_description = 'Number of Interfaces'
-
-# MikrotikInterfaceAdmin برای نمایش اطلاعات اینترفیس‌ها
-@admin.register(MikrotikInterface)
-class MikrotikInterfaceAdmin(admin.ModelAdmin):
-    list_display = ('name','device',  'flag', 'type')
-    search_fields = ('device__device_name', 'name', 'flag', 'type')
-    list_filter = ('device', 'type')
-
-# MikrotikIPRouteAdmin برای نمایش اطلاعات مسیریابی‌ها
-@admin.register(MikrotikIPRoute)
-class MikrotikIPRouteAdmin(admin.ModelAdmin):
-    list_display = ('destination', 'device' , 'gateway', 'distance', 'flag')
-    search_fields = ('device__device_name', 'destination', 'gateway', 'distance', 'flag')
-    list_filter = ('device', 'distance')
-
-# MikrotikIPAddressAdmin برای نمایش اطلاعات آدرس‌های IP
-@admin.register(MikrotikIPAddress)
-class MikrotikIPAddressAdmin(admin.ModelAdmin):
-    list_display = ('address','device',  'network', 'interface','flag')
-    search_fields = ('device__device_name', 'address', 'network', 'flag')
-    list_filter = ('device', 'network',)
 
 
 admin.site.site_header = "NetBox"
