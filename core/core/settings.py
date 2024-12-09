@@ -31,7 +31,7 @@ SECRET_KEY = config("SECRET_KEY", default="test")
 DEBUG = config("DEBUG", cast=bool, default=True)
 SHOW_DEBUGGER_TOOLBAR = config("SHOW_DEBUGGER_TOOLBAR", cast=bool, default=False)
 
-ALLOWED_HOSTS =  ['172.16.15.48', '127.0.0.1']
+ALLOWED_HOSTS =  ['127.0.0.1']
     
 # Application definition
 
