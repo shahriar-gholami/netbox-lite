@@ -106,7 +106,7 @@ class InterfaceCreateView(generics.GenericAPIView):
             name = serializer.validated_data.get('name')
             device = serializer.validated_data.get('device')
             interface_device, create = Device.objects.get_or_create(
-                name = device
+                host_name = device
             )
             status_field = serializer.validated_data.get('status', False)
             description = serializer.validated_data.get('description')
@@ -150,7 +150,7 @@ class VlanCreateView(generics.GenericAPIView):
             vlan_name = serializer.validated_data.get('vlan_name')
             device_name = serializer.validated_data.get('device_name')
             device = Device.objects.get(
-                name = device_name
+                host_name = device_name
             )
             new_vlan, create = Vlan.objects.get_or_create(
                 vlan_id = vlan_id,
@@ -213,7 +213,7 @@ class IPAddressCreateView(generics.GenericAPIView):
             description = serializer.validated_data.get('description')
             device = serializer.validated_data.get('device')
             ip_device = Device.objects.get(
-                name = device
+                host_name = device
             )
             interface = serializer.validated_data.get('interface')
             ip_interface = Interface.objects.filter(
@@ -253,7 +253,7 @@ class ResetDeviceView(generics.GenericAPIView):
         serializer = ResetDeviceSerializer(data=request.data)
         if serializer.is_valid():
             device_name = serializer.validated_data.get('device_name')
-            device = Device.objects.get(name=device_name)
+            device = Device.objects.get(host_name=device_name)
             interfaces = Interface.objects.filter(device=device)
             interfaces.delete()
             ips = IPAddress.objects.filter(device=device)
@@ -274,7 +274,7 @@ class RouteCreateView(generics.GenericAPIView):
             next_hop = serializer.validated_data.get('next_hop')
             interface = serializer.validated_data.get('interface')
             device_name = serializer.validated_data.get('device_name')
-            device = Device.objects.get(name=device_name)
+            device = Device.objects.get(host_name=device_name)
             
             new_route, create = Route.objects.get_or_create(
                 destination=destination,
@@ -296,7 +296,7 @@ class VrfRouteCreateView(generics.GenericAPIView):
             next_hop = serializer.validated_data.get('next_hop')
             interface = serializer.validated_data.get('interface')
             device_name = serializer.validated_data.get('device_name')
-            device = Device.objects.get(name=device_name)
+            device = Device.objects.get(host_name=device_name)
             vrf_name = serializer.validated_data.get('vrf_name')
             
             new_route, create = VrfRoute.objects.get_or_create(
@@ -319,7 +319,7 @@ class MikrotikInterfaceCreateView(generics.GenericAPIView):
             name = serializer.validated_data.get('name')
             flag = serializer.validated_data.get('flag')
             type = serializer.validated_data.get('type')
-            device = MikrotikDevice.objects.get(device_name=device_name)
+            device = MikrotikDevice.objects.get(host_name=device_name)
             
             new_mikrotik_interfce, create = MikrotikInterface.objects.get_or_create(
                 name=name,
@@ -340,7 +340,7 @@ class MikrotikIPAddressCreateView(generics.GenericAPIView):
             flag = serializer.validated_data.get('flag')
             interface = serializer.validated_data.get('interface')
             device_name = serializer.validated_data.get('device_name')
-            device = MikrotikDevice.objects.get(device_name=device_name)
+            device = MikrotikDevice.objects.get(host_name=device_name)
             
             new_mikrotik_ip, create = MikrotikIPAddress.objects.get_or_create(
                 address=address,
@@ -362,7 +362,7 @@ class MikrotikIPRouteCreateView(generics.GenericAPIView):
             flag = serializer.validated_data.get('flag')
             distance = serializer.validated_data.get('distance')
             device_name = serializer.validated_data.get('device_name')
-            device = MikrotikDevice.objects.get(device_name=device_name)
+            device = MikrotikDevice.objects.get(host_name=device_name)
             
             new_mikrotik_ip_route, create = MikrotikIPRoute.objects.get_or_create(
                 destination=destination,
@@ -372,6 +372,25 @@ class MikrotikIPRouteCreateView(generics.GenericAPIView):
                 device = device,
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ResetMikrotikDeviceView(generics.GenericAPIView):
+
+    serializer_class = ResetMikrotikDeviceSerializer
+
+    def post(self, request):
+        serializer = ResetDeviceSerializer(data=request.data)
+        if serializer.is_valid():
+            device_name = serializer.validated_data.get('device_name')
+            device = MikrotikDevice.objects.get(host_name=device_name)
+            interfaces = MikrotikInterface.objects.filter(device=device)
+            interfaces.delete()
+            ips = MikrotikIPAddress.objects.filter(device=device)
+            ips.delete()
+            ip_routes = MikrotikIPRoute.objects.filter(device=device)
+            ip_routes.delete()
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

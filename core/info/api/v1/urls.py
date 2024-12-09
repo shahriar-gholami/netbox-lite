@@ -21,4 +21,5 @@ urlpatterns = [
     path('mikrotik-ip/create/', MikrotikIPAddressCreateView.as_view(), name='mikrotik_ip_create'),
     path('mikrotik-ip-route/create/', MikrotikIPRouteCreateView.as_view(), name='mikrotik_ip_route_create'),
     path('reset-device/', ResetDeviceView.as_view(), name='reset_device'),
+    path('reset-mikrotik-device/', ResetMikrotikDeviceView.as_view(), name='reset_mikrotik_device'),
 ]

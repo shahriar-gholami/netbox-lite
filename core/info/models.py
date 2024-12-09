@@ -10,6 +10,7 @@ class DeviceSeries(models.Model):
 class Device(models.Model):
     name = models.CharField(max_length=255)
     ip_address = models.CharField(max_length=255, null=True, blank=True)
+    host_name = models.CharField(max_length=255, null=True, blank=True)
     # site = models.ForeignKey(Site, on_delete=models.CASCADE)
     series = models.ForeignKey(DeviceSeries, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
@@ -88,6 +89,13 @@ class VrfRoute(models.Model):
 class MikrotikDevice(models.Model):
     ip_address = models.CharField(max_length=255)
     device_name = models.CharField(max_length=255)
+    host_name = models.CharField(max_length=250, null=True, blank=True)
+
+    def get_device_interfaces(self):
+        device_interfaces = MikrotikInterface.objects.filter(
+            device = self
+        )
+        return device_interfaces
 
     def __str__(self):
         return self.device_name

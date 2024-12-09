@@ -47,6 +47,9 @@ class VlanSerializer(serializers.Serializer):
 class ResetDeviceSerializer(serializers.Serializer):
     device_name = serializers.CharField(max_length=255)
 
+class ResetMikrotikDeviceSerializer(serializers.Serializer):
+    device_name = serializers.CharField(max_length=255)
+
 class RouteSerializer(serializers.Serializer):
     destination = serializers.CharField(max_length=255)
     type = serializers.CharField(max_length=255)
